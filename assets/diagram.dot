@@ -1,0 +1,66 @@
+# http://www.graphviz.org/content/cluster
+
+digraph G {
+      graph [center=1 rankdir=LR
+    	compound=true
+  	fontname="Noto" 
+  	    bgcolor="#f4f4fa"
+        style="dotted, filled"
+        fillcolor="#FFFFFF"
+  ]
+  node [style="filled,rounded" shape=box fillcolor="#FFFFFF" penwidth=2
+          fontname="Noto" ]
+
+CxSAST->Codebashing
+CxSAST->Whitesource
+CxSAST->VSTS
+git->github
+github->ngrok
+vsts->ngrok
+Vagrant->CxSAST [lhead=cluster_vm]
+
+subgraph cluster_vm {
+    fontname="Noto"
+    label="Demo VM"
+sql[label="MSSQL Express"]
+vs[label="Visual Studio"]
+x11[label="X11 Server"]
+d [label="docker client"]
+c [label="Chrome"]
+ngrok->CxSAST
+CxSAST->git
+CxSAST->sql
+c->CxSAST
+vs->CxSAST
+}
+
+
+d->cli [lhead=cluster_docker]
+d->tfs
+c->jira
+c->jenkins
+sqlops -> x11
+sqlops -> sql
+intellij -> x11
+
+
+subgraph cluster_docker{
+    fontname="Noto"
+    label="Linux Docker"
+jenkins->jira->cli->sqlops->intellij [style=invis]
+CxIAST->Postgres
+subgraph cluster_todo{
+    node [fillcolor=grey penwidth=0]
+    label=""
+    style="invis"
+ant->maven->bamboo->bitbucket->teamcity [style=invis]
+}
+}
+
+subgraph cluster_dockerW{
+    label="Windows Docker"
+    fontname="Noto"
+    tfs
+}
+
+}

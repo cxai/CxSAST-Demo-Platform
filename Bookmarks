@@ -1,0 +1,75 @@
+{
+   "checksum": "b81df33533e6a7daa140e27378c429ed",
+   "roots": {
+      "bookmark_bar": {
+         "children": [ {
+            "date_added": "13165400080243779",
+            "id": "9",
+            "meta_info": {
+               "last_visited_desktop": "13165400080248383"
+            },
+            "name": "CxSAST",
+            "type": "url",
+            "url": "http://localhost/CxWebClient/"
+         }, {
+            "date_added": "13165399958389323",
+            "id": "6",
+            "meta_info": {
+               "last_visited_desktop": "13165399958391511"
+            },
+            "name": "Knowledge Center",
+            "type": "url",
+            "url": "https://checkmarx.atlassian.net/wiki/spaces/KC/overview"
+         }, {
+            "date_added": "13165398990152000",
+            "id": "5",
+            "meta_info": {
+               "last_visited_desktop": "13165399994140809"
+            },
+            "name": "Okta",
+            "type": "url",
+            "url": "https://checkmarx.okta.com/app/UserHome"
+         }, {
+            "date_added": "13165400117292970",
+            "id": "10",
+            "meta_info": {
+               "last_visited_desktop": "13165400117295754"
+            },
+            "name": "Cx Cloud",
+            "type": "url",
+            "url": "https://appsecdemo.checkmarx.net/CxWebClient/"
+         }, {
+            "date_added": "13165399985656606",
+            "id": "7",
+            "meta_info": {
+               "last_visited_desktop": "13165399985658353"
+            },
+            "name": "Codebashing",
+            "type": "url",
+            "url": "https://learn.codebashing.com/"
+         } ],
+         "date_added": "13165393592494597",
+         "date_modified": "13165400191403892",
+         "id": "1",
+         "name": "Bookmarks bar",
+         "type": "folder"
+      },
+      "other": {
+         "children": [  ],
+         "date_added": "13165393592494608",
+         "date_modified": "0",
+         "id": "2",
+         "name": "Other bookmarks",
+         "type": "folder"
+      },
+      "synced": {
+         "children": [  ],
+         "date_added": "13165393592494611",
+         "date_modified": "0",
+         "id": "3",
+         "name": "Mobile bookmarks",
+         "type": "folder"
+      }
+   },
+   "version": 1
+}

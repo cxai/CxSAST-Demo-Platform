@@ -1,0 +1,51 @@
+digraph G {
+      graph [center=1 rankdir=LR
+    	compound=true
+  	fontname="Noto" 
+  	    bgcolor="#f4f4fa"
+        style="dotted, filled"
+        fillcolor="#FFFFFF"
+  ]
+  node [style="filled,rounded" shape=box fillcolor="#FFFFFF" penwidth=2  fontname="Noto" ]
+  
+Vagrant->CxSAST [label=provision lhead=cluster_vm]
+
+subgraph cluster_vm {
+    fontname="Noto"
+    label="Demo VM"
+d [label="docker client"]
+CxSAST
+vs[label="Visual Studio"]
+x11[label="X11 Server"]
+}
+
+
+d->CxIAST [lhead=cluster_docker]
+CxIAST->d  [ltail=cluster_docker]
+
+CxSAST->Codebashing [lhead=cluster_ex]
+
+subgraph cluster_docker{
+    fontname="Noto"
+    label="Docker"
+    node [penwidth=0 style="filled" fillcolor="#eeeee0"]
+    CxIAST  [penwidth=0 style="filled" fillcolor="#eeeee0"]
+jenkins
+jira
+intellij
+tfs
+ etc [label="..." penwidth=0 fillcolor=white]
+}
+
+subgraph cluster_ex {
+   label="External systems"
+    fontname="Noto"
+   node [penwidth=0 style="filled" fillcolor="#eeeeee"]
+   Codebashing [penwidth=0 style="filled" fillcolor="#eeeeee"]
+   Whitesource
+   VSTS
+   etc2 [label="..." penwidth=0 fillcolor=white]
+   }
+   
+
+}
