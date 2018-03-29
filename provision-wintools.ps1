@@ -94,6 +94,13 @@ $i+=@{
 	installcmd='.\PowerPointViewer.exe /quiet /passive'
 	url='https://download.microsoft.com/download/E/6/7/E675FFFC-2A6D-4AB0-B3EB-27C9F8C8F696/PowerPointViewer.exe'
 }
+$i+=@{
+	name='CSV viewer'
+	program='C:\Program Files\Tad\Tad.exe'
+	installer='Tad.Setup.0.8.5.exe'
+	installcmd='.\Tad.Setup.0.8.5.exe /S'
+	url='https://github.com/antonycourtney/tad/releases/download/v0.8.5/Tad.Setup.0.8.5.exe'
+}
 <# Excel viewer cant open CSV files
 $i+=@{
 	name='Excel viewer'
