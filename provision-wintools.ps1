@@ -3,19 +3,21 @@
 # otherwise you might want to use [Console]::Error.WriteLine("
 $ProgressPreference = 'SilentlyContinue' # helps with download speed for invoke-webrequest
 
-# .NET version > 4.5 uses SSLv3 and TLS 1.0 by default. so we need to allow them
-$AllProtocols = [System.Net.SecurityProtocolType]'Ssl3,Tls,Tls11,Tls12'
-[System.Net.ServicePointManager]::SecurityProtocol = $AllProtocols
-
-#$ErrorActionPreference = 'SilentlyContinue'
-#$ErrorView='CategoryView'
-$installfolder='c:\vagrant'
-$linkfolder="C:\Users\vagrant\AppData\Local\Microsoft\WindowsApps"
-
-cd $installfolder
+$linkfolder="c:\bin"
+. c:\vagrant\software-installer.ps1 # get the install function
 
 $i=@()
 
+# PowerPoint is no longer supported by Microsoft and may no longer be downlaodable. It may require system reboot before it is installed
+# if it still fails to install - run the install manually to see the error. if the error relates to an ASP library try installing or *removing* .NET 3.5 - Get-WindowsFeature -name Net-Framework-Core
+# https://answers.microsoft.com/en-us/windows/forum/all/unable-to-install-any-application-error/fb0ca806-ce16-486f-84fc-5c0d82102f5a 
+$i+=@{
+	name='Power Point viewer'
+	program='C:\Program Files (x86)\Microsoft Office\Office14\PPTVIEW.EXE'
+	installer='PowerPointViewer.exe'
+	installcmd='.\PowerPointViewer.exe /quiet /passive'
+	url='https://download.microsoft.com/download/E/6/7/E675FFFC-2A6D-4AB0-B3EB-27C9F8C8F696/PowerPointViewer.exe'
+}
 $i+=@{
 	# https://www.google.com/intl/en/chrome/?standalone=1&platform=win64
 	name='Chrome'
@@ -49,7 +51,7 @@ $i+=@{
 	name='Webex Plugin'
 	program='C:\Users\vagrant\AppData\Local\Google\Chrome\User Data\Default\Extensions\jlhmfgmfgeifomenelglieieghnjghma\1.0.12_0\manifest.json'
 	installer='Cisco-WebEx-Extension.crx'
-	installcmd='& "C:\Program Files (x86)\Google\Chrome\Application\chrome.exe" --load-extension=$installfolder\Cisco-WebEx-Extension.crx'
+	installcmd='& "C:\Program Files (x86)\Google\Chrome\Application\chrome.exe" --load-extension=Cisco-WebEx-Extension.crx'
 	url='http://www.cisco.com/c/dam/en/us/td/docs/collaboration/webex_centers/esp/Cisco-WebEx-Extension_crx.zip'
 	unzip='Cisco-WebEx-Extension_crx.zip'
 }
@@ -58,7 +60,7 @@ $i+=@{
 	name='Docker client'
 	program="$linkfolder\docker.exe"
 	installer='docker\docker.exe'
-	installcmd="cp $installfolder\docker\docker.exe $linkfolder\"
+	installcmd="cp docker\docker.exe $linkfolder\"
 	url='https://download.docker.com/win/static/edge/x86_64/docker-17.10.0-ce.zip'
 	unzip='docker-17.10.0-ce.zip'
 }
@@ -82,17 +84,9 @@ $i+=@{
 	name='ngrok port forwarder'
 	program="$linkfolder\ngrok.exe" 
 	installer='ngrok.exe' 
-	installcmd="cp $installfolder\ngrok.exe $linkfolder\"
+	installcmd="cp ngrok.exe $linkfolder\"
 	url='https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-windows-amd64.zip'
 	unzip='ngrok-stable-windows-amd64.zip'
-}
-# PowerPoint is no longer supported by Microsoft.
-$i+=@{
-	name='Power Point viewer'
-	program='C:\Program Files (x86)\Microsoft Office\Office14\PPTVIEW.EXE'
-	installer='PowerPointViewer.exe'
-	installcmd='.\PowerPointViewer.exe /quiet /passive'
-	url='https://download.microsoft.com/download/E/6/7/E675FFFC-2A6D-4AB0-B3EB-27C9F8C8F696/PowerPointViewer.exe'
 }
 $i+=@{
 	name='CSV viewer'
@@ -101,6 +95,10 @@ $i+=@{
 	installcmd='.\Tad.Setup.0.8.5.exe /S'
 	url='https://github.com/antonycourtney/tad/releases/download/v0.8.5/Tad.Setup.0.8.5.exe'
 }
+#SkypeMeetingsApp.msi
+#https://az801095.vo.msecnd.net/prod/LWA/plugins/windows/SkypeMeetingsApp.msi
+# install with .\SkypeMeetingsApp.msi not by msiexec /i SkypeMeetingsApp.msi 
+
 <# Excel viewer cant open CSV files
 $i+=@{
 	name='Excel viewer'
@@ -112,66 +110,11 @@ $i+=@{
 	hash='e0a5a388255244f1f5eb2fbf46bdc7292f7e3d8e'
 }
 #>
-# Download, install, link
-foreach($e in $i) {
-	if ($e.containsKey('installer') -and !(Test-Path "$installfolder\$($e.installer)") -and $e.containsKey('url')) {
-		Write-Output "Downloading $($e.name)"
-		if ($e.containsKey('unzip')) {
-			try {
-				Invoke-WebRequest $e.url -OutFile "$installfolder\$($e.unzip)" -UseBasicParsing  
-				if ($e.containsKey('unzippwd')) {
-					Expand-Archive $e.unzip -DestinationPath $installfolder
-				} else {
-					Expand-Archive $e.unzip -DestinationPath $installfolder -Password $e.unzippwd 
-				}
-				rm $e.unzip
-			} catch {
-				Write-Host ">>> Can not download and unzip $($e.name): $($_.Exception.Message)"
-			}
-		} else {
-			try {
-				Invoke-WebRequest $e.url -OutFile "$installfolder\$($e.installer)" -UseBasicParsing
-			} catch {
-				Write-Host ">>> Can not download $($e.name): $($_.Exception.Message)"
-		       	}
-		}
-	}
-	if ($e.containsKey('program') -and !(Test-Path $e.program) -and (Test-Path "$installfolder\$($e.installer)")) {
-		Write-Output "Installing $($e.name)"
-		Invoke-Expression $($e.installcmd) # out-host does not work on invoke-expression. to make it synchronous, i.e. wait for it to complete
-		Start-Sleep -m 500 # give some time for the process to start 
-		if ($e.installcmd -match "[^\\]*\.exe") { # monitor install by the short name
-			Wait-Process $Matches[0].replace(".exe","") -erroraction 'silentlycontinue'
-		} else {
-			$counter=20 # If no possible/no easy way to watch for an installer, just wait process wait n sec for the install to finish
-			while (!(Test-Path $e.program) -and ($counter-- -gt 0)){ 
-				Start-Sleep -s 1
-			}
-		}
-		if (!(Test-Path $e.program)){
-			Write-Host ">>> $($e.name) install may have failed. "
-			#exit 1
-		}
-	}
-	if ($e.ContainsKey('link') -and !(Test-Path "$linkfolder\$($e.link)")){
-		Write-Output "Linking $($e.name) to $linkfolder\$($e.link)"
-		if ($e.containsKey('linkcmd')) {
-			Write-Output "@echo off`r`n$($e.linkcmd)" | out-file -encoding ascii "$linkfolder\$($e.link)" # all this extra quoting just to make commands with spaces work
-		} else {
-			Write-Output "@start ""$($e.name)"" ""$($e.program)"" %*" | out-file -encoding ascii "$linkfolder\$($e.link)" # all this extra quoting just to make commands with spaces work
-		}
-	}
-}
+
+DownloadInstallLink $i 'c:\vagrant' 'c:\bin'
 
 if (!(Get-NetFirewallRule | where {$_.Name -eq "X11External"})) {
 	Write-Host "Enabling X11 remote connections..."
 	# open firewall 
 	New-NetFirewallRule -Name "X11External" -DisplayName "X org server remote connection to TCP/6000 for display :0" -Protocol tcp -LocalPort 6000 -Action Allow -Enabled True | out-null
-}
- 
-$val = Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" -Name "AutoAdminLogon"
-if($val.AutoAdminLogon -eq 0) {
-	Write-Host "Enabling auto logon..."
-	Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" -Name "DefaultPassword" -Type String -Value "vagrant"
-	Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" -Name "AutoAdminLogon" -Type DWord -Value 1
 }

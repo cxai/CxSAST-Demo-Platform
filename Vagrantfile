@@ -12,7 +12,7 @@ Vagrant.configure("2") do |config|
 
   config.vm.network "private_network", ip: "192.168.50.5" # to simplify networking, not strictly necessary
 
-  config.vm.synced_folder "~/Shared Folder", "c:/shared folder", type: "virtualbox"
+  config.vm.synced_folder "~/Shared Folder", "c:/shared folder", type: "virtualbox" # shared content between host and the vm, also used for binding into docker containers
 
   config.vm.provider "virtualbox" do |vb|
     vb.name = "CxSAST Demo Platform"
@@ -31,4 +31,6 @@ Vagrant.configure("2") do |config|
   config.vm.provision "shell", path: "provision-wintools.ps1", privileged: false # privileged: false required for Windows Server 2016 Build 14393.rs1_release.170917-1700
   config.vm.provision "shell", path: "provision-cxsast.ps1", privileged: false
   config.vm.provision "shell", path: "provision-cxintegrations.ps1", privileged: false
+  config.vm.provision "shell", path: "provision-environment.ps1", privileged: false
+
 end

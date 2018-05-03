@@ -12,7 +12,7 @@ A vagrant managed Virtual Machine capable of demonstrating majority of the Check
 * Vagrant
 * A copy of CxSetup.exe to the folder with the vagrantfile
 
-Run `vagrant up`. The first time vagrant will pull the required box from vagrant cloud on the first run which is around 6Gb.
+Run `vagrant up`. The first time vagrant will pull the required alexivkin/windows_2016 box from vagrant cloud on the first run which is around 7Gb.
 
 ### Software installed by the scripts
 * CxSAST
@@ -37,10 +37,12 @@ Run `vagrant up`. The first time vagrant will pull the required box from vagrant
 # Important notes
 1. All pre-configured users/passwords are set to admin/admin
 2. Many third party components require configuration the first time you start them. They use persistent storage, so you only need to do it once, even if you remove and recreate the VM. The [source for the dockerfiles](https://github.com/alexivkin/Docker-CxIntegrations/) includes notes on the first-time configuration.
+3. This platform is designed and tested on the alexivkin/windows_2016 source vagrant box.
 
 # Architecture
 ## High level
 ![High level](assets/diagram001.png)
+
 
 ## Detailed
 ![Detailed](assets/diagram.png)
