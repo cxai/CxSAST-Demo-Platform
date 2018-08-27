@@ -41,6 +41,16 @@ $i+=@{
 	link="a.bat"
 }
 
+# Any applicable Hotfixes
+#$i+=@{
+#	name='CxSAST 8.7 HF1'
+#	program='C:\Program Files\Checkmarx\Checkmarx Engine Server\Engine Server\CxEngineAgent.exe'
+#	installer='8.7.0.HF1.CLI.exe'
+#	installcmd=".\8.7.0.HF1.CLI.exe" 
+#	url='https://download.checkmarx.com/8.7.0/HF/8.7.0.HF1.CLI.zip'
+#	unzip='8.7.0.HF1.CLI.zip'
+#}
+
 . c:\vagrant\software-installer.ps1
 
 DownloadInstallLink $i 'c:\vagrant' 'c:\bin'
@@ -57,6 +67,7 @@ if($val.CustomerFeedback -ne 0) {
 	Set-ItemProperty -Path "HKLM:\Software\Wow6432Node\Microsoft\Microsoft SQL Server\140\" -Name "EnableErrorReporting" -Type DWord -Value 0
 }
 
+# Enable remote MSSQL connection for troubleshooting
 if (!(Get-NetFirewallRule | where {$_.Name -eq "MSSQLExternal"})) {
 	Write-Host "Enabling MSSQL remote connections..."
 	# open firewall
@@ -79,7 +90,7 @@ if (!(Get-NetFirewallRule | where {$_.Name -eq "MSSQLExternal"})) {
 }
 
 
-# Check for license and it's correctness
+# Check for license correctness
 if (!(Test-Path "license.cxl")) {
   # first generate the HID, we'll need it later
   $hidall=(& "c:\Program Files\Checkmarx\HID\HID.exe") | out-string
@@ -125,3 +136,10 @@ values (2,'admin@cx','$admin_password','2018-03-19',-1,'admin','admin','admin@cx
 set IDENTITY_INSERT [CxDB].[dbo].Users off;
 "
 #>
+
+# enable confidence level
+# "update [CxDB].[Config].[CxEngineConfigurationKeysMeta] set DefaultValue = 'true' WHERE (KeyName = 'CALCULATE_CONFIDENCE_LEVEL')"
+
+# enable CL log 
+#    update [CxDB].[Config].[CxEngineConfigurationKeysMeta] set DefaultValue = 'true' WHERE (KeyName = 'WRITE_CONFIDENCE_LEVEL_TO_LOG')"
+# log is in AppData\Local\\Checkmarx\Checkmarx Engine Server\Engine Server\Scans\{projecHash}\ConfidenceLevelLogs

@@ -12,7 +12,11 @@ A vagrant managed Virtual Machine capable of demonstrating majority of the Check
 * Vagrant
 * A copy of CxSetup.exe to the folder with the vagrantfile
 
-Run `vagrant up`. The first time vagrant will pull the required alexivkin/windows_2016 box from vagrant cloud on the first run which is around 7Gb.
+Run `vagrant up`. On the first run Vagrant will pull the required `alexivkin/windows_2016` box from the vagrant cloud, which is around 7Gb.
+
+The system needs to be rebooted a coupld of times. Do this manually or automate the reboot with the vagrant-reload plugin:
+* Run `vagrant plugin install vagrant-reload`
+* Add `config.vm.provision :reload` to your Vagrantfile to reload your VM during provisioning.
 
 ### Software installed by the scripts
 * CxSAST
@@ -37,15 +41,16 @@ Run `vagrant up`. The first time vagrant will pull the required alexivkin/window
 # Important notes
 1. All pre-configured users/passwords are set to admin/admin
 2. Many third party components require configuration the first time you start them. They use persistent storage, so you only need to do it once, even if you remove and recreate the VM. The [source for the dockerfiles](https://github.com/alexivkin/Docker-CxIntegrations/) includes notes on the first-time configuration.
-3. This platform is designed and tested on the alexivkin/windows_2016 source vagrant box.
+3. This platform is designed and tested on the alexivkin/windows_2016 source vagrant box. Packer source for this box is [here](https://github.com/alexivkin/windows_2016). You can use any other standard windows 2016 server box as the base,
+but mine is slimmed down and heavily optimized.
 
 # Architecture
 ## High level
 ![High level](assets/diagram001.png)
 
-
 ## Detailed
 ![Detailed](assets/diagram.png)
+
 ## Using external docker containers
 Make sure your docker host accepts external connections. I.e the 2375 port is open and the docker service is listening on TCP.
 

@@ -1,5 +1,9 @@
-<# Download install and link soft.
-# Needs an array of hashtables that contain fields like 
+<# 
+Powershell software downloader and installer. 
+Alex Ivkin 2018. MIT License.
+
+Create an array of hashtables that contain fields like
+ 
 {
 	name='Git client'
 	program='C:\Program Files\Git\bin\git.exe'
@@ -14,8 +18,8 @@
 Import using
 . c:\vagrant\software-installer.ps1
 
-Default path for links is
-#$linkfolder="C:\Users\vagrant\AppData\Local\Microsoft\WindowsApps"
+Run using 
+DownloadInstallLink $i 'c:\vagrant' 'c:\bin'
 
 #>
 $ProgressPreference = 'SilentlyContinue' # helps with the download speed for invoke-webrequest
